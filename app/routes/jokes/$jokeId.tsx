@@ -7,6 +7,7 @@ import {
   Link,
   Form,
 } from "remix";
+import { Button, Text, Link as ChakraLink } from "@chakra-ui/react";
 
 import { db } from "~/utils/db.server";
 import { getUserId, requireUserId } from "~/utils/session.server";
@@ -79,18 +80,22 @@ export default function JokeRoute() {
   const data = useLoaderData<LoaderData>();
 
   return (
-    <div>
-      <p>Here's your hilarious joke:</p>
-      <p>{data.joke.content}</p>
-      <Link to=".">{data.joke.name} Permalink</Link>
+    <>
+      <Text>Here's your hilarious joke:</Text>
+      <Text>{data.joke.content}</Text>
+      <ChakraLink as={Link} color="pink.500" to=".">
+        {data.joke.name} Permalink
+      </ChakraLink>
 
       {data.isOwner ? (
         <Form method="post">
           <input type="hidden" name="_method" value="delete"></input>
-          <button type="submit">Delete</button>
+          <Button type="submit" colorScheme="red">
+            Delete
+          </Button>
         </Form>
       ) : null}
-    </div>
+    </>
   );
 }
 
@@ -100,13 +105,13 @@ export function CatchBoundary() {
 
   switch (caught.status) {
     case 400: {
-      return <div>What you're trying to do is not allowed.</div>;
+      return <Text>What you're trying to do is not allowed.</Text>;
     }
     case 401: {
-      return <div>Sorry, but {params.jokeId} is not your joke.</div>;
+      return <Text>Sorry, but {params.jokeId} is not your joke.</Text>;
     }
     case 404: {
-      return <div>Huh? What the heck is {params.jokeId}?</div>;
+      return <Text>Huh? What the heck is {params.jokeId}?</Text>;
     }
     default: {
       throw new Error(`Unhandled error: ${caught.status}`);

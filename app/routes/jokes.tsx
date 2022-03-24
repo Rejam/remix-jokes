@@ -1,5 +1,5 @@
 import { Form, json, Link, Outlet, useLoaderData } from "remix";
-import { Heading } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, Text } from "@chakra-ui/react";
 
 import { getUser } from "~/utils/session.server";
 import { db } from "~/utils/db.server";
@@ -30,32 +30,37 @@ export default function JokesRoute() {
   const data = useLoaderData<LoaderData>();
 
   return (
-    <div className="jokes-layout">
-      <header className="jokes-header">
-        <div className="container">
-          <Heading as="h1">
-            <Link to="/" title="Remix Jokes" aria-label="Remix Jokes">
-              <span className="logo">🤪</span>
-              <span className="logo-medium">J🤪KES</span>
-            </Link>
-          </Heading>
-          {data?.user ? (
-            <div className="user-info">
-              <span>{`Hi ${data.user.username}`}</span>
-              <Form action="/logout" method="post">
-                <button type="submit" className="button">
-                  Logout
-                </button>
-              </Form>
-            </div>
-          ) : (
-            <Link to="/login">Login</Link>
-          )}
-        </div>
+    <Box bg="blue.100" minH="100vh">
+      <header>
+        <Box pos="sticky" top={0} bg="inherit" py={4} shadow="md">
+          <Container maxW="container.lg">
+            <Flex justifyContent="space-between" alignItems="center">
+              <Heading as="h1">
+                <Link to="/" title="Remix Jokes" aria-label="Remix Jokes">
+                  <span>🤪</span>
+                  <span>J🤪KES</span>
+                </Link>
+              </Heading>
+
+              {data?.user ? (
+                <Flex alignItems="center" gap={4}>
+                  <Text>{`Hi ${data.user.username}`}</Text>
+                  <Form action="/logout" method="post">
+                    <Button type="submit">Logout</Button>
+                  </Form>
+                </Flex>
+              ) : (
+                <Button as={Link} to="/login">
+                  Login
+                </Button>
+              )}
+            </Flex>
+          </Container>
+        </Box>
       </header>
-      <main className="jokes-main">
-        <div className="container">
-          <div className="jokes-list">
+      <main>
+        <Container maxW="container.lg" py={16}>
+          <div>
             <Link to=".">Get a random joke</Link>
             <p>Here are a few more jokes to check out:</p>
             <ul>
@@ -67,15 +72,13 @@ export default function JokesRoute() {
                 </li>
               ))}
             </ul>
-            <Link to="new" className="button">
-              Add your own
-            </Link>
+            <Link to="new">Add your own</Link>
           </div>
-          <div className="jokes-outlet">
+          <div>
             <Outlet />
           </div>
-        </div>
+        </Container>
       </main>
-    </div>
+    </Box>
   );
 }

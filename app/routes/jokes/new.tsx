@@ -1,4 +1,16 @@
 import {
+  Button,
+  Container,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  Textarea,
+} from "@chakra-ui/react";
+import {
   ActionFunction,
   Form,
   json,
@@ -67,58 +79,42 @@ export default function NewJokeRoute() {
   const actionData = useActionData<ActionData>();
 
   return (
-    <div>
-      <p>Add your own hilarious joke</p>
-      <Form method="post">
-        <div>
-          <label>
-            Name:{" "}
-            <input
-              type="text"
-              name="name"
-              defaultValue={actionData?.fields?.name}
-              aria-invalid={Boolean(actionData?.fieldErrors?.name) || undefined}
-              aria-errormessage={
-                actionData?.fieldErrors?.name ? "name-error" : undefined
-              }
-            />
-          </label>
-          {actionData?.fieldErrors?.name ? (
-            <p role="alert" id="name-error">
-              {actionData.fieldErrors.name}
-            </p>
-          ) : null}{" "}
-        </div>
-        <div>
-          <label>
-            Content:{" "}
-            <textarea
-              name="content"
-              defaultValue={actionData?.fields?.content}
-              aria-invalid={
-                Boolean(actionData?.fieldErrors?.content) || undefined
-              }
-              aria-errormessage={
-                actionData?.fieldErrors?.content ? "content-error" : undefined
-              }
-            />
-          </label>
-          {actionData?.fieldErrors?.content ? (
-            <p role="alert" id="content-error">
-              {actionData.fieldErrors.content}
-            </p>
-          ) : null}
-        </div>
-        <div>
-          {actionData?.formError ? (
-            <p role="alert">{actionData.formError}</p>
-          ) : null}
-          <button type="submit" className="button">
-            Add
-          </button>
-        </div>
-      </Form>
-    </div>
+    <>
+      <Heading as="h3">Add your own hilarious joke</Heading>
+      <Container m={0} p={0}>
+        <Form method="post">
+          <Stack spacing={4} alignItems="flex-start">
+            <FormControl isInvalid={Boolean(actionData?.fieldErrors?.name)}>
+              <FormLabel>Name:</FormLabel>
+              <Input
+                variant="filled"
+                type="text"
+                name="name"
+                defaultValue={actionData?.fields?.name}
+              />
+              <FormErrorMessage>
+                {actionData?.fieldErrors?.name}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={Boolean(actionData?.fieldErrors?.content)}>
+              <FormLabel>Content:</FormLabel>
+              <Textarea
+                variant="filled"
+                name="content"
+                defaultValue={actionData?.fields?.content}
+              />
+              <FormErrorMessage>
+                {actionData?.fieldErrors?.content}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={Boolean(actionData?.formError)}>
+              <FormErrorMessage>{actionData?.formError}</FormErrorMessage>
+            </FormControl>
+            <Button type="submit">Add</Button>
+          </Stack>
+        </Form>
+      </Container>
+    </>
   );
 }
 
@@ -127,16 +123,18 @@ export function CatchBoundary() {
 
   if (caught.status === 401) {
     return (
-      <div className="error-container">
-        <p>You must be logged in to create a joke.</p>
-        <Link to="/login">Login</Link>
-      </div>
+      <>
+        <Text>You must be logged in to create a joke.</Text>
+        <Button as={Link} to="/login">
+          Login
+        </Button>
+      </>
     );
   }
 }
 
 export function ErrorBoundary() {
-  return <div>Something unexpected went wrong. Sorry about that.</div>;
+  return <Text>Something unexpected went wrong. Sorry about that.</Text>;
 }
 
 function validateJokeName(name: string) {
