@@ -9,7 +9,7 @@ import {
 } from "remix";
 import React, { useContext, useEffect } from "react";
 import { withEmotionCache } from "@emotion/react";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, Heading } from "@chakra-ui/react";
 
 import { ServerStyleContext, ClientStyleContext } from "./chakraContext";
 
@@ -103,9 +103,9 @@ export function CatchBoundary() {
   return (
     <Document title={`${caught.status} ${caught.statusText}`}>
       <ChakraProvider>
-        <h1>
+        <Heading as="h1">
           {caught.status} {caught.statusText}
-        </h1>
+        </Heading>
       </ChakraProvider>
     </Document>
   );
@@ -115,7 +115,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
   return (
     <Document title="Uh-oh!">
       <ChakraProvider>
-        <h1>App Error</h1>
+        <Heading as="h1">App Error</Heading>
         <pre>{error.message}</pre>
       </ChakraProvider>
     </Document>

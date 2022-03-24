@@ -1,4 +1,5 @@
 import { Form, json, Link, Outlet, useLoaderData } from "remix";
+import { Heading } from "@chakra-ui/react";
 
 import { getUser } from "~/utils/session.server";
 import { db } from "~/utils/db.server";
@@ -32,12 +33,12 @@ export default function JokesRoute() {
     <div className="jokes-layout">
       <header className="jokes-header">
         <div className="container">
-          <h1 className="home-link">
+          <Heading as="h1">
             <Link to="/" title="Remix Jokes" aria-label="Remix Jokes">
               <span className="logo">🤪</span>
               <span className="logo-medium">J🤪KES</span>
             </Link>
-          </h1>
+          </Heading>
           {data?.user ? (
             <div className="user-info">
               <span>{`Hi ${data.user.username}`}</span>

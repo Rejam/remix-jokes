@@ -6,6 +6,18 @@ import {
   useActionData,
   useSearchParams,
 } from "remix";
+import {
+  Button,
+  Container,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  Radio,
+  RadioGroup,
+  Stack,
+} from "@chakra-ui/react";
 
 import { db } from "~/utils/db.server";
 import { createUserSession, login, register } from "~/utils/session.server";
@@ -40,6 +52,8 @@ export const action: ActionFunction = async ({ request }) => {
   const loginType = form.get("loginType");
   const username = form.get("username");
   const password = form.get("password");
+
+  console.log({ redirectTo, loginType, username, password });
 
   if (
     typeof loginType !== "string" ||
@@ -108,87 +122,74 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Login() {
   const [searchParams] = useSearchParams();
   const actionData = useActionData<ActionData>();
+
   return (
-    <div>
-      <h1>Login</h1>
+    <Container>
+      <Heading as="h1">Login</Heading>
       <Form method="post">
-        <input
-          type="hidden"
-          name="redirectTo"
-          value={searchParams.get("redirectTo") ?? undefined}
-        />
-        <label>
-          <input
-            type="radio"
-            name="loginType"
-            value="login"
-            defaultChecked={
-              !actionData?.fields?.loginType ||
-              actionData?.fields?.loginType === "login"
-            }
-          />{" "}
-          Login
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="loginType"
-            value="register"
-            defaultChecked={actionData?.fields?.loginType === "register"}
-          />{" "}
-          Register
-        </label>
-        <div>
-          <label htmlFor="username-input">Username</label>
-          <input
-            type="text"
-            id="username-input"
-            name="username"
-            defaultValue={actionData?.fields?.username}
-            aria-invalid={
-              Boolean(actionData?.fieldErrors?.username) || undefined
-            }
-            aria-errormessage={
-              actionData?.fieldErrors?.username ? "username-error" : undefined
-            }
+        <Stack spacing={4}>
+          <Input
+            type="hidden"
+            name="redirectTo"
+            value={searchParams.get("redirectTo") ?? undefined}
           />
-          {actionData?.fieldErrors?.username ? (
-            <p
-              className="form-validation-error"
-              role="alert"
-              id="username-error"
-            >
-              {actionData.fieldErrors.username}
-            </p>
-          ) : null}
-        </div>
-        <div>
-          <label htmlFor="password-input">Password</label>
-          <input
-            id="password-input"
-            name="password"
-            type="password"
-            defaultValue={actionData?.fields?.password}
-            aria-invalid={
-              Boolean(actionData?.fieldErrors?.password) || undefined
+          <RadioGroup
+            defaultValue={
+              !actionData?.fields?.loginType
+                ? "login"
+                : actionData?.fields?.loginType
             }
-            aria-errormessage={
-              actionData?.fieldErrors?.password ? "password-error" : undefined
-            }
-          />
-          {actionData?.fieldErrors?.password ? (
-            <p
-              className="form-validation-error"
-              role="alert"
-              id="password-error"
-            >
-              {actionData.fieldErrors.password}
-            </p>
-          ) : null}
-        </div>
-        <button type="submit">Submit</button>
+          >
+            <Stack direction="row">
+              <Radio type="radio" name="loginType" value="login">
+                Login
+              </Radio>
+              <Radio type="radio" name="loginType" value="register">
+                Register
+              </Radio>
+            </Stack>
+          </RadioGroup>
+
+          <FormControl
+            isInvalid={Boolean(actionData?.fieldErrors?.username) || undefined}
+          >
+            <FormLabel htmlFor="username-input">Username</FormLabel>
+            <Input
+              type="text"
+              id="username-input"
+              name="username"
+              defaultValue={actionData?.fields?.username}
+              aria-errormessage={
+                actionData?.fieldErrors?.username ? "username-error" : undefined
+              }
+            />
+            <FormErrorMessage id="username-error">
+              {actionData?.fieldErrors?.username}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl
+            isInvalid={Boolean(actionData?.fieldErrors?.password) || undefined}
+          >
+            <FormLabel htmlFor="password-input">Password</FormLabel>
+            <Input
+              type="password"
+              id="password-input"
+              name="password"
+              defaultValue={actionData?.fields?.password}
+              aria-errormessage={
+                actionData?.fieldErrors?.password ? "password-error" : undefined
+              }
+            />
+            <FormErrorMessage id="password-error">
+              {actionData?.fieldErrors?.password}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={Boolean(actionData?.formError) || undefined}>
+            <FormErrorMessage>{actionData?.formError}</FormErrorMessage>
+          </FormControl>
+          <Button type="submit">Submit</Button>
+        </Stack>
       </Form>
-      {actionData?.formError ? <div>{actionData.formError}</div> : null}
 
       <div>
         <ul>
@@ -200,7 +201,7 @@ export default function Login() {
           </li>
         </ul>
       </div>
-    </div>
+    </Container>
   );
 }
 

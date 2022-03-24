@@ -1,4 +1,5 @@
 import { Link } from "remix";
+import { Heading } from "@chakra-ui/react";
 
 import type { MetaFunction } from "remix";
 
@@ -10,9 +11,9 @@ export const meta: MetaFunction = () => ({
 export default function Index() {
   return (
     <div>
-      <h1>
+      <Heading as="h1">
         Remix <span>Jokes!</span>
-      </h1>
+      </Heading>
       <nav>
         <ul>
           <li>
